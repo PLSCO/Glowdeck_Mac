@@ -1,0 +1,465 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06CAF50F1F4FDD6600D8FF31 /* NSString+NSStringHexToBytes.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CAF50E1F4FDD6600D8FF31 /* NSString+NSStringHexToBytes.m */; };
+		0B1381DDDD8A759B72B66E1C /* Pods_Glowdeck.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E16F27F662FE57E4754B02E9 /* Pods_Glowdeck.framework */; };
+		D0B09BC91DFE0760006499EC /* BluetoothLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B09BC81DFE0760006499EC /* BluetoothLE.swift */; };
+		D0C975031DDE92D100123E62 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C975021DDE92D100123E62 /* AppDelegate.swift */; };
+		D0C975051DDE92D100123E62 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C975041DDE92D100123E62 /* ViewController.swift */; };
+		D0C975071DDE92D100123E62 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0C975061DDE92D100123E62 /* Assets.xcassets */; };
+		D0C9750A1DDE92D100123E62 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0C975081DDE92D100123E62 /* Main.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		06CAF50D1F4FDD4700D8FF31 /* NSString+NSStringHexToBytes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+NSStringHexToBytes.h"; sourceTree = "<group>"; };
+		06CAF50E1F4FDD6600D8FF31 /* NSString+NSStringHexToBytes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+NSStringHexToBytes.m"; sourceTree = "<group>"; };
+		52527382CFD6E810C484E532 /* Pods-Glowdeck.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Glowdeck.release.xcconfig"; path = "Pods/Target Support Files/Pods-Glowdeck/Pods-Glowdeck.release.xcconfig"; sourceTree = "<group>"; };
+		D0B09BC61DFDF317006499EC /* Glowdeck-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Glowdeck-Header.h"; sourceTree = "<group>"; };
+		D0B09BC81DFE0760006499EC /* BluetoothLE.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothLE.swift; sourceTree = "<group>"; };
+		D0C974FF1DDE92D100123E62 /* Glowdeck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Glowdeck.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0C975021DDE92D100123E62 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D0C975041DDE92D100123E62 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D0C975061DDE92D100123E62 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D0C975091DDE92D100123E62 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D0C9750B1DDE92D100123E62 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D0CA7CC51E1527880044CBE4 /* Glowdeck.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Glowdeck.entitlements; sourceTree = SOURCE_ROOT; };
+		E16F27F662FE57E4754B02E9 /* Pods_Glowdeck.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Glowdeck.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F6A1C068AC3C31CE520DCFE2 /* Pods-Glowdeck.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Glowdeck.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Glowdeck/Pods-Glowdeck.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D0C974FC1DDE92D100123E62 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B1381DDDD8A759B72B66E1C /* Pods_Glowdeck.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8AEA6EE83F594E29870A67D8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E16F27F662FE57E4754B02E9 /* Pods_Glowdeck.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D0B09B7E1DFDED93006499EC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D0C9750B1DDE92D100123E62 /* Info.plist */,
+				D0B09BC61DFDF317006499EC /* Glowdeck-Header.h */,
+				D0CA7CC51E1527880044CBE4 /* Glowdeck.entitlements */,
+				D0F46BF91E15DB5900AB3CB6 /* Libraries */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D0B09BBF1DFDF1EF006499EC /* BluetoothLE */ = {
+			isa = PBXGroup;
+			children = (
+				D0B09BC81DFE0760006499EC /* BluetoothLE.swift */,
+			);
+			name = BluetoothLE;
+			path = BLE;
+			sourceTree = "<group>";
+		};
+		D0C974F61DDE92D100123E62 = {
+			isa = PBXGroup;
+			children = (
+				D0C975011DDE92D100123E62 /* Glowdeck */,
+				D0C975001DDE92D100123E62 /* Products */,
+				D9939F6423C3F42938EAD8D0 /* Pods */,
+				8AEA6EE83F594E29870A67D8 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D0C975001DDE92D100123E62 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D0C974FF1DDE92D100123E62 /* Glowdeck.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D0C975011DDE92D100123E62 /* Glowdeck */ = {
+			isa = PBXGroup;
+			children = (
+				D0C975021DDE92D100123E62 /* AppDelegate.swift */,
+				D0C975041DDE92D100123E62 /* ViewController.swift */,
+				D0C975081DDE92D100123E62 /* Main.storyboard */,
+				D0C975061DDE92D100123E62 /* Assets.xcassets */,
+				D0B09B7E1DFDED93006499EC /* Supporting Files */,
+				06CAF50D1F4FDD4700D8FF31 /* NSString+NSStringHexToBytes.h */,
+				06CAF50E1F4FDD6600D8FF31 /* NSString+NSStringHexToBytes.m */,
+			);
+			name = Glowdeck;
+			path = "Glowdeck®";
+			sourceTree = "<group>";
+		};
+		D0F46BF91E15DB5900AB3CB6 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				D0B09BBF1DFDF1EF006499EC /* BluetoothLE */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		D9939F6423C3F42938EAD8D0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F6A1C068AC3C31CE520DCFE2 /* Pods-Glowdeck.debug.xcconfig */,
+				52527382CFD6E810C484E532 /* Pods-Glowdeck.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D0C974FE1DDE92D100123E62 /* Glowdeck */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D0C9750E1DDE92D100123E62 /* Build configuration list for PBXNativeTarget "Glowdeck" */;
+			buildPhases = (
+				69D4724858D8B054F919D358 /* [CP] Check Pods Manifest.lock */,
+				D0C974FB1DDE92D100123E62 /* Sources */,
+				D0C974FC1DDE92D100123E62 /* Frameworks */,
+				D0C974FD1DDE92D100123E62 /* Resources */,
+				3F2C4E58966BB4B4CAB4492E /* [CP] Embed Pods Frameworks */,
+				04D3CB2362829763485F5E59 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Glowdeck;
+			productName = "Glowdeck®";
+			productReference = D0C974FF1DDE92D100123E62 /* Glowdeck.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D0C974F71DDE92D100123E62 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0810;
+				LastUpgradeCheck = 0900;
+				ORGANIZATIONNAME = "Justin Kaufman";
+				TargetAttributes = {
+					D0C974FE1DDE92D100123E62 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = YU9GKRD8PL;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 0;
+							};
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+							com.apple.iCloud = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = D0C974FA1DDE92D100123E62 /* Build configuration list for PBXProject "Glowdeck" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D0C974F61DDE92D100123E62;
+			productRefGroup = D0C975001DDE92D100123E62 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D0C974FE1DDE92D100123E62 /* Glowdeck */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D0C974FD1DDE92D100123E62 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0C975071DDE92D100123E62 /* Assets.xcassets in Resources */,
+				D0C9750A1DDE92D100123E62 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		04D3CB2362829763485F5E59 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Glowdeck/Pods-Glowdeck-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3F2C4E58966BB4B4CAB4492E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Glowdeck/Pods-Glowdeck-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		69D4724858D8B054F919D358 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D0C974FB1DDE92D100123E62 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0C975051DDE92D100123E62 /* ViewController.swift in Sources */,
+				D0C975031DDE92D100123E62 /* AppDelegate.swift in Sources */,
+				06CAF50F1F4FDD6600D8FF31 /* NSString+NSStringHexToBytes.m in Sources */,
+				D0B09BC91DFE0760006499EC /* BluetoothLE.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		D0C975081DDE92D100123E62 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D0C975091DDE92D100123E62 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D0C9750C1DDE92D100123E62 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Glowdeck®/BLE";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Glowdeck®",
+					"$(PROJECT_DIR)/Glowdeck®/BLE",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Glowdeck®/Glowdeck-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D0C9750D1DDE92D100123E62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Glowdeck®/BLE";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Glowdeck®",
+					"$(PROJECT_DIR)/Glowdeck®/BLE",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Glowdeck®/Glowdeck-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		D0C9750F1DDE92D100123E62 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F6A1C068AC3C31CE520DCFE2 /* Pods-Glowdeck.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Glowdeck.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Justin Kaufman (YU9GKRD8PL)";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YU9GKRD8PL;
+				INFOPLIST_FILE = "Glowdeck®/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.plsco.GlowdeckMacOS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d13784cc-c6f8-40ad-94f3-32c693b6769b";
+				PROVISIONING_PROFILE_SPECIFIER = "Glowdeck macOS Developer ID Profile";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Glowdeck®/Glowdeck-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Glowdeck-Swift.h";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		D0C975101DDE92D100123E62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 52527382CFD6E810C484E532 /* Pods-Glowdeck.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Glowdeck.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Justin Kaufman (YU9GKRD8PL)";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YU9GKRD8PL;
+				INFOPLIST_FILE = "Glowdeck®/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.plsco.GlowdeckMacOS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d13784cc-c6f8-40ad-94f3-32c693b6769b";
+				PROVISIONING_PROFILE_SPECIFIER = "Glowdeck macOS Developer ID Profile";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Glowdeck®/Glowdeck-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Glowdeck-Swift.h";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D0C974FA1DDE92D100123E62 /* Build configuration list for PBXProject "Glowdeck" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D0C9750C1DDE92D100123E62 /* Debug */,
+				D0C9750D1DDE92D100123E62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D0C9750E1DDE92D100123E62 /* Build configuration list for PBXNativeTarget "Glowdeck" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D0C9750F1DDE92D100123E62 /* Debug */,
+				D0C975101DDE92D100123E62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D0C974F71DDE92D100123E62 /* Project object */;
+}
