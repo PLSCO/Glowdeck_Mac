@@ -446,7 +446,7 @@ URLSessionTaskDelegate {
     }
 
     func updateCurrentBuild(_ buildData: Data) {
-        if let json = try! JSONSerialization.jsonObject(with: buildData, options: .allowFragments) as? NSDictionary {
+        if let dict = try? JSONSerialization.jsonObject(with: buildData, options: .allowFragments), let json = dict as? NSDictionary {
             if let build = json["version"] as? String {
                 currentBuild = build
                 currentVersionLabel.stringValue = "v\(currentBuild)"
