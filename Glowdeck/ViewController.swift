@@ -27,8 +27,8 @@ URLSessionTaskDelegate {
     var arguments: [NSString] = []
     var assertionID: IOPMAssertionID = IOPMAssertionID(0)
     var keepAwake: IOReturn = -100
-    var binPath: URL = URL(string: "http://streams.io/glowdeck/firmware/images/glowdeckV2.bin")!
-    var binPathString: NSString = "http://streams.io/glowdeck/firmware/images/glowdeckV2.bin"
+    var binPath: URL = URL(string: "https://glowdeck.com/legacy/glowdeck/firmware/images/glowdeckV2.bin")!
+    var binPathString: NSString = "https://glowdeck.com/legacy/glowdeck/firmware/images/glowdeckV2.bin"
     var fileHandle: FileHandle!
     var currentBuild: String = ""
     var installedBuild: String = ""
@@ -276,7 +276,7 @@ URLSessionTaskDelegate {
     }
 
     @IBAction func helpButtonPressed(_: AnyObject) {
-        NSWorkspace.shared.open(NSURL(string: "http://streams.io/glowdeck")! as URL)
+        NSWorkspace.shared.open(NSURL(string: "https://glowdeck.com/legacy/glowdeck")! as URL)
     }
 
     func connectRoutine(_ selected: String) {
@@ -340,7 +340,7 @@ URLSessionTaskDelegate {
     func getFirmware() {
         let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
         inputTextField.placeholderString = "Complete URL for .bin file"
-        inputTextField.stringValue = "http://streams.io/glowdeck/firmware/images/glowdeckV2.bin"
+        inputTextField.stringValue = "https://glowdeck.com/legacy/glowdeck/firmware/images/glowdeckV2.bin"
 
         let alert = NSAlert()
         alert.messageText = "Select Firmware"
@@ -436,7 +436,7 @@ URLSessionTaskDelegate {
     }
     
     func getCurrentBuild() {
-        let url = URL(string: "http://streams.io/buckets/scripts/getCurrentBuild.php")
+        let url = URL(string: "https://glowdeck.com/legacy/buckets/scripts/getCurrentBuild.php")
         let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
             DispatchQueue.main.async(execute: {
                 self.updateCurrentBuild(data!)
