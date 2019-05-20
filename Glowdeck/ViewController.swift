@@ -312,8 +312,8 @@ URLSessionTaskDelegate {
 
     @IBAction func sendTapped(_: AnyObject?) {
         let message = sendField.stringValue
+        sppSend(message)
         sendField.stringValue = ""
-        sendMessage(message)
     }
 
     func connectRoutine(_ selected: String) {
@@ -1089,7 +1089,7 @@ extension ViewController {
     }
 
     func sppDfuMode() {
-        sendMessage("GFU^\r")
+        sppSend("GFU^\r")
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [unowned self] () -> Void in
             self.glowdeckSPP = true
             self.downloadFirmware()
@@ -1097,24 +1097,11 @@ extension ViewController {
     }
 
     func sppSend(_ message: String) {
-        print("[SPP TX] \(message)")
-        log("[SPP TX] \(message)")
-        let data = message.data(using: String.Encoding.utf8)
-        let length = data!.count
-        let dataPointer = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 1)
-        (data as NSData?)?.getBytes(dataPointer,length: length)
-        mRFCOMMChannel?.writeSync(dataPointer, length: UInt16(length))
-    }
+        // mRFCOMMChannel?.setSerialParameters(T##speed: UInt32##UInt32, dataBits: T##UInt8, parity: T##BluetoothRFCOMMParityType, stopBits: T##UInt8)
 
-    func sppPut(_ data: Data) {
-        print("[TX] \(data.description)")
-        let length = data.count
-        let dataPointer = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 1)
-        (data as NSData?)?.getBytes(dataPointer,length: length)
-        mRFCOMMChannel?.writeSync(dataPointer, length: UInt16(length))
-    }
+        print("[SPP TX] \(message.replacingOccurrences(of: "\r", with: ""))")
+        log("[SPP TX] \(message.replacingOccurrences(of: "\r", with: ""))")
 
-    func sendMessage(_ message: String) {
         let msg: String
         if message.contains("\r") {
             msg = message
@@ -1122,14 +1109,38 @@ extension ViewController {
             msg = message + "\r"
         }
 
-        let data = msg.data(using: String.Encoding.utf8)
-        let length = data!.count
+        guard let data = msg.data(using: String.Encoding.utf8) else {
+            log("[SPP Error] Could not convert message to data: \(message)")
+            return
+        }
+
+        let length = data.count
+        let dataPointer = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 1)
+        let nsData = NSData(data: data)
+        nsData.getBytes(dataPointer, length: length)
+
+        mRFCOMMChannel?.writeSync(dataPointer, length: UInt16(length))
+    }
+
+    func sppPut(_ data: Data) {
+        print("[SPP PUT] \(data.description)")
+        let length = data.count
         let dataPointer = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 1)
         (data as NSData?)?.getBytes(dataPointer,length: length)
         mRFCOMMChannel?.writeSync(dataPointer, length: UInt16(length))
+    }
 
-        print("[SPP TX] \(message.replacingOccurrences(of: "\r", with: ""))")
-        log("[SPP TX] \(message.replacingOccurrences(of: "\r", with: ""))")
+    func sendMessage(_ message: String) {
+        guard let data = message.data(using: String.Encoding.utf8) else {
+            log("[SPP Error] Could not convert message to data: \(message)")
+            return
+        }
+
+        let length = data.count
+        let dataPointer = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 1)
+        let nsData = NSData(data: data)
+        nsData.getBytes(dataPointer, length: length)
+        mRFCOMMChannel?.writeSync(dataPointer, length: UInt16(length))
     }
 
     func rfcommChannelOpenComplete(_ rfcommChannel: IOBluetoothRFCOMMChannel!, status error: IOReturn) {

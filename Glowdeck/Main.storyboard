@@ -365,6 +365,9 @@
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <action selector="sendTapped:" target="XfG-lQ-9wD" id="jaw-bt-DT3"/>
+                                </connections>
                             </textField>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NGg-PS-gZe" userLabel="btcConnectButton">
                                 <rect key="frame" x="538" y="64" width="80" height="19"/>
@@ -373,6 +376,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" size="11" name="Avenir-Medium"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="sendTapped:" target="XfG-lQ-9wD" id="7RF-9e-VWj"/>
+                                </connections>
                             </button>
                         </subviews>
                     </view>
@@ -391,6 +397,8 @@
                         <outlet property="pathField" destination="t8O-I4-Wsu" id="eYZ-9N-2vQ"/>
                         <outlet property="pathSelectButton" destination="O27-OD-Iot" id="7De-fa-HyO"/>
                         <outlet property="percentCompleteField" destination="8s1-5C-MFW" id="2wQ-hX-3yX"/>
+                        <outlet property="sendButton" destination="NGg-PS-gZe" id="gb5-8R-odc"/>
+                        <outlet property="sendField" destination="vx0-Xh-Bax" id="UnR-5z-TuG"/>
                         <outlet property="updateButton" destination="rJh-o2-H3u" id="DCj-sD-Pqn"/>
                         <outlet property="updateIndicator" destination="fZ3-QX-k8p" id="lfX-9n-TRh"/>
                     </connections>
