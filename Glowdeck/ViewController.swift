@@ -23,16 +23,33 @@ class ViewController: NSViewController,
     IOBluetoothRFCOMMChannelDelegate,
     URLSessionDownloadDelegate,
 URLSessionTaskDelegate {
-    // MARK: Firmware update vars
     var arguments: [NSString] = []
     var assertionID: IOPMAssertionID = IOPMAssertionID(0)
     var keepAwake: IOReturn = -100
-    var binPath: URL = URL(string: "https://glowdeck.com/legacy/glowdeck/firmware/images/glowdeckV2.bin")!
-    var binPathString: NSString = "https://glowdeck.com/legacy/glowdeck/firmware/images/glowdeckV2.bin"
+
+    var binPath: URL {
+        return URL(string: String(binPathString))!
+    }
+
+    var binPathString: NSString {
+        get {
+            return NSString(
+                string: (
+                    UserDefaults.standard.string(forKey: "firmwarePath") ??
+                    "https://glowdeck.com/legacy/glowdeck/firmware/images/glowdeckV2.bin"
+                )
+            )
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "firmwarePath")
+            pathField.stringValue = String(newValue)
+        }
+    }
+
     var fileHandle: FileHandle!
     var currentBuild: String = ""
     var installedBuild: String = ""
-    var manualDisconnect: Bool = false
+    var manualDisconnect: Bool = true
     var autoUpdate: Bool = false
     var firmwareSize: Int = 0
     var firmwareUpdateActive: Bool = false
@@ -48,16 +65,19 @@ URLSessionTaskDelegate {
     var lastSelectedTitle: String = "Scanning..."
 
     // MARK: State vars
+
     var glowdeckBLE: Bool = false
     var glowdeckSPP: Bool = false
     var rtcTime = ""
 
     // MARK: SPP vars
+
     var mRFCOMMChannel: IOBluetoothRFCOMMChannel?
     var inquiry: IOBluetoothDeviceInquiry?
     var sppDevice: IOBluetoothDevice!
 
     // MARK: BLE vars
+
     var ble: BLE!
     var bleRecv: String = ""
     var bundle = Bundle()
@@ -68,16 +88,18 @@ URLSessionTaskDelegate {
     var bleConnectStatus: Bool = false
 
     // MARK: Arduino patch vars
+
     var arduinoPath: URL!
     var arduinoPathString: String = "/Applications/Arduino.app"
 
     // MARK: Interface outlets
+    @IBOutlet weak var console: NSTextView!
     @IBOutlet weak var glowdeckIcon: NSImageView!
     @IBOutlet weak var btcConnectedGlowdeckField: NSTextField!
     @IBOutlet weak var btcUpdateButton: NSButton!
     @IBOutlet weak var btcConnectButton: NSButton!
     @IBOutlet weak var updateButton: NSButton!
-    @IBOutlet var btcConnectIndicator: NSProgressIndicator!
+    @IBOutlet weak var btcConnectIndicator: NSProgressIndicator!
     @IBOutlet weak var currentVersionLabel: NSTextField!
     @IBOutlet weak var installedVersionLabel: NSTextField!
     @IBOutlet weak var pathSelectButton: NSButton!
@@ -86,8 +108,13 @@ URLSessionTaskDelegate {
     @IBOutlet weak var pathField: NSTextField!
     @IBOutlet weak var updateIndicator: NSProgressIndicator!
     @IBOutlet weak var bleConnectIndicator: NSProgressIndicator!
+    @IBOutlet weak var bleScanButton: NSButton!
+
+    @IBOutlet weak var sendField: NSTextField!
+    @IBOutlet weak var sendButton: NSButton!
 
     // MARK: Overrides
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -100,11 +127,11 @@ URLSessionTaskDelegate {
         // Setup background session for file downloads
         let backgroundSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "glowdeckBackgroundSession")
         backgroundSession = Foundation.URLSession(configuration: backgroundSessionConfiguration, delegate: self, delegateQueue: OperationQueue.main)
-        self.bundle = Bundle.main
+        bundle = Bundle.main
 
         // SPP connection
-        // inquiry = IOBluetoothDeviceInquiry()
-        // inquiry?.delegate = self
+        inquiry = IOBluetoothDeviceInquiry()
+        inquiry?.delegate = self
 
         // BLE connection
         ble = BLE()
@@ -113,12 +140,13 @@ URLSessionTaskDelegate {
     }
 
     override func viewWillAppear() {
-        DispatchQueue.main.async {
-            self.getCurrentBuild()
-        }
+        super.viewWillAppear()
+        getCurrentBuild()
     }
 
     override func viewDidAppear() {
+        super.viewDidAppear()
+
         for arg in arguments {
             let argStr = String(arg)
 
@@ -134,17 +162,17 @@ URLSessionTaskDelegate {
                     binPathString = arg
                 }
 
-                self.pathField.stringValue = "\(binPathString)"
-                binPath = (NSURL(fileURLWithPath: "\(binPathString)", isDirectory: false) as URL)
-                self.autoUpdate = true
+                pathField.stringValue = "\(binPathString)"
+                autoUpdate = true
                 break
             }
         }
 
-        self.bleScan()
+        bleScan()
     }
 
     // MARK: Arduino installer actions
+
     @IBAction func consumerButton(_: AnyObject) {
         let alert = NSAlert()
         alert.addButton(withTitle: "OK")
@@ -195,6 +223,7 @@ URLSessionTaskDelegate {
     }
 
     // MARK: SPP actions
+
     @IBAction func btcConnectPressed(_: AnyObject) {
         sppPair()
     }
@@ -204,6 +233,7 @@ URLSessionTaskDelegate {
     }
 
     // MARK: BLE actions
+
     @IBAction func updatePressed(_: AnyObject) {
         recoveryTimer?.invalidate()
         self.downloadFirmware()
@@ -217,8 +247,10 @@ URLSessionTaskDelegate {
         let selected = connectButton.titleOfSelectedItem!
         let index = connectButton.indexOfItem(withTitle: selected)
         let item = connectButton.item(at: index)
+
         connectButton.select(item)
         connectButton.synchronizeTitleAndSelectedItem()
+
         if selected.count > 1 {
             if selected == "Disconnect" {
                 if lastSelectedTitle.range(of: "deck") != nil {
@@ -240,9 +272,7 @@ URLSessionTaskDelegate {
                         self.connectButton.synchronizeTitleAndSelectedItem()
                         self.lastSelectedTitle = "Scanning..."
 
-                        DispatchQueue.main.async { [weak self] in
-                            self?.bleScan()
-                        }
+                        bleScan()
                     }
                 }
             } else if selected != "Scanning..." {
@@ -250,26 +280,23 @@ URLSessionTaskDelegate {
                 self.bleScanTimer?.invalidate()
                 self.bleScanHandlerTimer?.invalidate()
                 self.recoveryTimer?.invalidate()
+
                 if ble.peripherals.count > 0 {
                     for i in 0..<ble.peripherals.count {
                         if ble.peripherals[i].name == selected {
-                            DispatchQueue.main.async {
-                                if self.ble.connectToPeripheral(peripheral: self.ble.peripherals[i]) {
-                                    self.connectButton.item(withTitle: "Scanning...")?.title = "Disconnect"
-                                    self.connectButton.item(withTitle: "Disconnect")?.image = NSImage(named: "NSStatusUnavailable")!
-                                    self.connectButton.selectItem(withTitle: selected)
-                                    self.connectButton.synchronizeTitleAndSelectedItem()
-                                    self.lastSelectedTitle = selected
-                                    print("Connecting to \(selected)...")
-                                }
+                            if self.ble.connectToPeripheral(peripheral: self.ble.peripherals[i]) {
+                                self.connectButton.item(withTitle: "Scanning...")?.title = "Disconnect"
+                                self.connectButton.item(withTitle: "Disconnect")?.image = NSImage(named: "NSStatusUnavailable")!
+                                self.connectButton.selectItem(withTitle: selected)
+                                self.connectButton.synchronizeTitleAndSelectedItem()
+                                self.lastSelectedTitle = selected
+                                print("Connecting to \(selected)...")
                             }
                             return
                         }
                     }
                 } else {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.bleScan()
-                    }
+                    bleScan()
                 }
             }
         }
@@ -277,6 +304,16 @@ URLSessionTaskDelegate {
 
     @IBAction func helpButtonPressed(_: AnyObject) {
         NSWorkspace.shared.open(NSURL(string: "https://glowdeck.com/legacy/glowdeck")! as URL)
+    }
+
+    @IBAction func bleScanPressed(_: AnyObject) {
+        bleScan()
+    }
+
+    @IBAction func sendTapped(_: AnyObject?) {
+        let message = sendField.stringValue
+        sendField.stringValue = ""
+        sendMessage(message)
     }
 
     func connectRoutine(_ selected: String) {
@@ -339,8 +376,8 @@ URLSessionTaskDelegate {
 
     func getFirmware() {
         let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
-        inputTextField.placeholderString = "Complete URL for .bin file"
-        inputTextField.stringValue = "https://glowdeck.com/legacy/glowdeck/firmware/images/glowdeckV2.bin"
+        inputTextField.placeholderString = "Complete URL or path for .bin file"
+        inputTextField.stringValue = String(binPathString) // "https://glowdeck.com/legacy/glowdeck/firmware/images/glowdeckV2.bin"
 
         let alert = NSAlert()
         alert.messageText = "Select Firmware"
@@ -351,17 +388,14 @@ URLSessionTaskDelegate {
         alert.alertStyle = .informational
         alert.accessoryView = inputTextField
 
-        alert.beginSheetModal(for: super.view.window!, completionHandler: { (modalResponse) -> Void in
+        alert.beginSheetModal(for: super.view.window!, completionHandler: { [unowned self] (modalResponse) -> Void in
             // 'OK' Pressed
             if modalResponse == NSApplication.ModalResponse.alertFirstButtonReturn {
                 let input = inputTextField.stringValue
                 // Valid URL
-                if input.count > 0 && (input.range(of: ":") != nil && input.range(of: "//") != nil && input.range(of: ".") != nil && input.range(of: "http") != nil && input.range(of: ".bin") != nil) {
-                    self.binPathString = input as NSString
-                    self.binPath = URL(string: self.binPathString as String)!
-                    DispatchQueue.main.async {
-                        self.pathField.stringValue = self.binPathString as String
-                    }
+                if input.range(of: ".bin") != nil {
+                    self.binPathString = NSString(string: input)
+                    self.pathField.stringValue = self.binPathString as String
                 }
                 // Invalid URL
                 else {
@@ -375,9 +409,7 @@ URLSessionTaskDelegate {
             }
             // 'Local File' Pressed
             else if modalResponse == NSApplication.ModalResponse.alertSecondButtonReturn {
-                DispatchQueue.main.async { [weak self] in
-                    self?.browseFirmware()
-                }
+                self.browseFirmware()
             }
         })
     }
@@ -398,7 +430,6 @@ URLSessionTaskDelegate {
         if dialog.runModal() == NSApplication.ModalResponse.OK {
             let result = dialog.url
             if result != nil {
-                self.binPath = result!
                 self.binPathString = result!.path as NSString
                 self.pathField.stringValue = self.binPathString as String
                 self.autoUpdate = true
@@ -425,9 +456,7 @@ URLSessionTaskDelegate {
         if dialog.runModal() == NSApplication.ModalResponse.OK {
             let result = dialog.url
             if result != nil {
-                self.binPath = result!
                 self.binPathString = result!.path as NSString
-                self.pathField.stringValue = self.binPathString as String
             }
         }
         else {
@@ -501,13 +530,12 @@ URLSessionTaskDelegate {
 
     func transmitTime() {
         updateTime()
-        DispatchQueue.main.async {
-            self.bleSend("TIM:\(self.rtcTime)^\r")
-        }
+        bleSend("TIM:\(self.rtcTime)^\r")
     }
 }
 
-// MARK: - Bluetooth LE methods
+// MARK: Bluetooth LE methods
+
 extension ViewController {
     @objc func bleScan() {
         // Only rescan if we're not already connected
@@ -516,6 +544,7 @@ extension ViewController {
             bleConnectIndicator.isHidden = false
             bleConnectIndicator.isIndeterminate = true
             bleConnectIndicator.usesThreadedAnimation = true
+            bleScanButton.isEnabled = false
             bleConnectIndicator.startAnimation(nil)
 
             // If there is an active periphral, cancel the connection first
@@ -523,7 +552,6 @@ extension ViewController {
                 if ble.activePeripheral?.state == .connected {
                     ble.centralManager.cancelPeripheralConnection(ble.activePeripheral!)
                     bleScanTimer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(self.bleScan), userInfo: nil, repeats: false)
-
                     return
                 }
             }
@@ -533,12 +561,13 @@ extension ViewController {
                     updateButton.isEnabled = false
                 }
             } else {
-                print("BLE scan error")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: { [weak self] in
+                    self?.bleScan()
+                })
+                return
             }
 
-            // Schedule timer to call bleScanHandler and check if a peripheral was found
             bleScanHandlerTimer = Timer.scheduledTimer(timeInterval: 1.875, target: self, selector: #selector(self.bleScanHandler), userInfo: nil, repeats: false)
-
         } else {
             if self.ble.disconnectFromPeripheral(peripheral: self.ble.activePeripheral!) {
                 self.updateButton.isEnabled = false
@@ -597,8 +626,7 @@ extension ViewController {
                     }
                 }
             }
-        }
-        else {
+        } else {
             connectButton.removeAllItems()
             connectButton.addItem(withTitle: "Scanning...")
             connectButton.item(withTitle: "Scanning...")?.image = NSImage(named: "NSStatusPartiallyAvailable")!
@@ -606,9 +634,8 @@ extension ViewController {
         }
 
         connectButton.synchronizeTitleAndSelectedItem()
-
-        bleScanTimer = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(self.bleScan), userInfo: nil, repeats: false)
-
+        bleScanButton.isEnabled = true
+        // bleScanTimer = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(self.bleScan), userInfo: nil, repeats: false)
     }
 
     func bleDidUpdateState() {
@@ -633,15 +660,14 @@ extension ViewController {
 
         if autoUpdate {
             bleSend("GFU^\r")
-            let delay = 6.125 * Double(NSEC_PER_SEC)
-            let time = DispatchTime.now() + Double(Int64(delay)) / Double(NSEC_PER_SEC)
-            DispatchQueue.main.asyncAfter(deadline: time) { [unowned self] () -> Void in
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [unowned self] () -> Void in
                 self.downloadFirmware()
             }
             return
         }
 
-        recoveryTimer = Timer.scheduledTimer(timeInterval: 6.5, target: self, selector: #selector(self.checkRecovery), userInfo: nil, repeats: false)
+        recoveryTimer = Timer.scheduledTimer(timeInterval: 7.0, target: self, selector: #selector(self.checkRecovery), userInfo: nil, repeats: false)
     }
 
     func bleDidDisconenctFromPeripheral() {
@@ -676,13 +702,11 @@ extension ViewController {
     func bleDidReceiveData(data: NSData?) {
         let bleTemp: String = NSString(data: data! as Data, encoding: String.Encoding.utf8.rawValue)! as String
         bleRecv += bleTemp
+        log("[BLE RX] \(bleTemp)")
 
-        if bleRecv.range(of: "^") == nil {
-            return
-        }
-
+        guard bleRecv.range(of: "^") != nil else { return }
         bleRecv = bleRecv.replacingOccurrences(of: "\n", with: "")
-        print("[RX] \(bleRecv.replacingOccurrences(of: "\r", with: ""))")
+        // print("[RX] \(bleRecv.replacingOccurrences(of: "\r", with: ""))")
         bleReceiveHandler(bleRecv)
         bleRecv = ""
     }
@@ -692,8 +716,6 @@ extension ViewController {
         var setParams: [String] = []
 
         if rx.range(of: ":") != nil {
-            // recoveryMode = false
-            // bluetoothData = true
             let components = rx.components(separatedBy: ":")
             if components.count >= 2 {
                 cmd = components[0]
@@ -706,16 +728,12 @@ extension ViewController {
         }
 
         switch cmd {
-
         case "SYNC":
             // print("Sync requested, sending status command")
+            transmitTime()
 
-            DispatchQueue.main.async {
-                self.transmitTime()
-            }
-
-            self.runWithDelay(3.1275) {
-                self.bleSend("VER^\r")
+            runWithDelay(3.1275) { [weak self] in
+                self?.bleSend("VER^\r")
             }
 
         case "POW":
@@ -782,10 +800,7 @@ extension ViewController {
             if !setParams.isEmpty {
                 installedBuild = setParams[0]
                 installedVersionLabel.stringValue = "v\(installedBuild)"
-
-                DispatchQueue.main.async {
-                    self.bleSend("VER:OK^\r")
-                }
+                bleSend("VER:OK^\r")
             }
         case "TIM":
             //print("Time requested")
@@ -945,33 +960,43 @@ extension ViewController {
              }
              */
         default:
-            print("[BLE] \(rx)")
+            // print("[BLE] \(rx)")
             self.glowdeckBLE = true
         }
     }
+
     func bleSend(_ sendCmd: String) {
         if firmwareUpdateActive && !sendCmd.contains("GFU") { return }
+
         var sendData: Data!
+
         // Count bytes in transmit string
         let totalBytes = sendCmd.count
         var remainingBytes = totalBytes
+
         // Transmit string too long to send in single transmission (20 byte limit over BLE)
         if (totalBytes > 19) {
             var holder = sendCmd
+
             // Send transmit string in 20-byte sections (until entire string is transmitted)
             repeat {
-                let tempString1 = holder.substring(to: holder.index(holder.startIndex, offsetBy: 19))       // Bytes: 0  - 20
-                let tempString2 = holder.substring(from: holder.index(holder.startIndex, offsetBy: 19))     // Bytes: 20 - End
+                // Bytes: 0  - 20
+                let tempString1 = String(holder[..<holder.index(holder.startIndex, offsetBy: 19)])
+
+                // Bytes: 20 - End
+                let tempString2 = String(holder[holder.index(holder.startIndex, offsetBy: 19)...])
+
                 // Send 20 bytes of transmit string
                 sendData = Data(bytes: UnsafePointer<UInt8>(tempString1), count: tempString1.count)
                 ble.write(sendData as NSData)
                 remainingBytes = tempString2.count
+
                 // Still more than 20 bytes left to transmit...
                 if remainingBytes > 19 {
                     // Trim the bytes we sent from our transmit string
                     holder = tempString2
                 }
-                    // Not more than 20 bytes left to transmit (i.e. send final transmission)
+                // Not more than 20 bytes left to transmit (i.e. send final transmission)
                 else {
                     sendData = Data(bytes: UnsafePointer<UInt8>(tempString2), count: tempString2.count)
                     ble.write(sendData as NSData)
@@ -980,20 +1005,21 @@ extension ViewController {
                 }
             } while (remainingBytes > 0)
         }
-            // Transmit string does not exceed 20 bytes, send in single transmission
+        // Transmit string does not exceed 20 bytes, send in single transmission
         else {
             sendData = Data(bytes: UnsafePointer<UInt8>(sendCmd), count: sendCmd.count)
             ble.write(sendData as NSData)
         }
-
     }
+
     func blePut(_ transmit: NSMutableData) {
         let data: Data = transmit as Data
         ble.write(data as NSData)
     }
 }
 
-// MARK: - Bluetooth SPP methods
+// MARK: Bluetooth SPP methods
+
 extension ViewController {
     func sppPair() {
         let deviceSelector = IOBluetoothDeviceSelectorController.deviceSelector()
@@ -1013,7 +1039,7 @@ extension ViewController {
 
         let deviceArray = deviceSelector?.getResults();
 
-        if (( deviceArray == nil ) || ( deviceArray?.count == 0 )) {
+        if ((deviceArray == nil) || (deviceArray?.count == 0)) {
             print("Error - no selected device. This should never happen.")
             return
         }
@@ -1027,7 +1053,7 @@ extension ViewController {
             return
         }
 
-        var rfcommChannelID: BluetoothRFCOMMChannelID = 0;
+        var rfcommChannelID: BluetoothRFCOMMChannelID = 0
 
         if (sppServiceRecord?.getRFCOMMChannelID(&rfcommChannelID) != kIOReturnSuccess) {
             print("Error - no spp service in selected device. This should never happen an spp service must have an rfcomm channel id.")
@@ -1044,8 +1070,9 @@ extension ViewController {
             glowdeckSPP = true
             // sppDevice.addToFavorites()
 
-            self.sppDevice.register(forDisconnectNotification: nil, selector: #selector(self.sppDeviceDidDisconnect))
+            sppDevice.register(forDisconnectNotification: nil, selector: #selector(self.sppDeviceDidDisconnect))
 
+            log("[SPP] Connected to \(sppDevice.name!)")
             print("[SPP] Connected to \(sppDevice.name!)")
             btcConnectedGlowdeckField.stringValue = sppDevice.name
             btcConnectButton.title = "Disconnect"
@@ -1057,21 +1084,21 @@ extension ViewController {
         glowdeckSPP = false
         btcConnectButton.title = "Connect"
         btcConnectedGlowdeckField.stringValue = ""
+        log("[SPP] Disconnected")
         print("[SPP] Disconnected")
     }
 
     func sppDfuMode() {
-        self.sendMessage("GFU^\r")
-        let delay = 2.5 * Double(NSEC_PER_SEC)
-        let time = DispatchTime.now() + Double(Int64(delay)) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: time) { () -> Void in
+        sendMessage("GFU^\r")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [unowned self] () -> Void in
             self.glowdeckSPP = true
             self.downloadFirmware()
         }
     }
 
     func sppSend(_ message: String) {
-        print("[TX] \(message)")
+        print("[SPP TX] \(message)")
+        log("[SPP TX] \(message)")
         let data = message.data(using: String.Encoding.utf8)
         let length = data!.count
         let dataPointer = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 1)
@@ -1088,40 +1115,45 @@ extension ViewController {
     }
 
     func sendMessage(_ message: String) {
-        let data = message.data(using: String.Encoding.utf8)
+        let msg: String
+        if message.contains("\r") {
+            msg = message
+        } else {
+            msg = message + "\r"
+        }
+
+        let data = msg.data(using: String.Encoding.utf8)
         let length = data!.count
         let dataPointer = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 1)
         (data as NSData?)?.getBytes(dataPointer,length: length)
-        print("[TX] \(message)")
         mRFCOMMChannel?.writeSync(dataPointer, length: UInt16(length))
+
+        print("[SPP TX] \(message.replacingOccurrences(of: "\r", with: ""))")
+        log("[SPP TX] \(message.replacingOccurrences(of: "\r", with: ""))")
     }
 
     func rfcommChannelOpenComplete(_ rfcommChannel: IOBluetoothRFCOMMChannel!, status error: IOReturn) {
         if error != kIOReturnSuccess {
-            print("Error - Failed to open the RFCOMM channel")
-        }
-        else {
-            print("rfcommChannelOpenComplete")
-            let delay = 6.5 * Double(NSEC_PER_SEC)
-            let time = DispatchTime.now() + Double(Int64(delay)) / Double(NSEC_PER_SEC)
-            DispatchQueue.main.asyncAfter(deadline: time) { () -> Void in
-                self.sppDfuMode()
-            }
+            print("Failed to open the RFCOMM channel!")
+        } else {
+            print("Open RFCOMM channel complete")
         }
     }
 
     func rfcommChannelData(_ rfcommChannel: IOBluetoothRFCOMMChannel!, data dataPointer: UnsafeMutableRawPointer!, length dataLength: Int) {
         let message = String(bytesNoCopy: dataPointer, length: Int(dataLength), encoding: String.Encoding.utf8, freeWhenDone: false)
+        log("[SPP RX] \(message ?? "<Unknown>")")
         print("[SPP RX] \(message ?? "<Unknown>")")
     }
 
     func deviceInquiryComplete(sender: IOBluetoothDeviceInquiry, error: IOReturn, aborted: Bool) {
         let sppDevices = sender.foundDevices()
-        if !(sppDevices?.isEmpty)! {
-            print("sppDevices: \(String(describing: sppDevices))")
+        if !((sppDevices ?? []).isEmpty) {
+            print("[SPP Devices]: \(String(describing: sppDevices))")
             for spp in sppDevices! {
                 if let gdSpp = spp as? IOBluetoothDevice {
                     gdSpp.getAddress()
+                    log("[SPP Device] \(gdSpp.name!)")
                 }
             }
         }
@@ -1132,9 +1164,14 @@ extension ViewController {
         let nsData = NSData(data: data!)
         return nsData
     }
+
+    func log(_ msg: String) {
+        console.string += (msg + "\r")
+    }
 }
 
-// MARK: - Firmware loader methods
+// MARK: Firmware loader methods
+
 extension ViewController {
     func downloadFirmware() {
         self.updateButton.title = "Wait..."
@@ -1194,6 +1231,7 @@ extension ViewController {
             self.transmitFirmwareHeader()
         }
     }
+
     func transmitFirmwareHeader() {
         firmwareSize = firmwareData.count
         var SZ1 = UInt8((firmwareSize >> 24) & 0xFF)
@@ -1277,7 +1315,8 @@ extension ViewController {
     }
 }
 
-// MARK: - File download methods
+// MARK: File download methods
+
 extension ViewController {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         downloadTask = nil
@@ -1303,7 +1342,8 @@ extension ViewController {
     }
 }
 
-// MARK: - Arduino patch methods
+// MARK: Arduino patch methods
+
 extension ViewController {
     func browseFile() {
         let dialog = NSOpenPanel()
@@ -1336,6 +1376,7 @@ extension ViewController {
             return
         }
     }
+
     func patchArduino() {
         // self.editionLabel.stringValue = "Updating Arduino..."
         //pathField.isEnabled = false
